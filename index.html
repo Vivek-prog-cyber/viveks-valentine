@@ -34,7 +34,7 @@
           if (phase !== "hearts") return;
           const timer = setTimeout(() => {
             setPhase("final");
-          }, 2600);
+          }, 5100); // keep hearts on-screen for ~3 seconds
           return () => clearTimeout(timer);
         }, [phase]);
 
@@ -91,11 +91,12 @@
         const heartShower =
           phase === "hearts" ? (
             <div className="heart-shower" aria-hidden="true">
-              {Array.from({ length: 90 }).map((_, index) => {
+              {Array.from({ length: 320 }).map((_, index) => {
                 const left = Math.random() * 100;
-                const delay = (Math.random() * 0.8).toFixed(2);
-                const duration = (2.1 + Math.random() * 0.9).toFixed(2);
-                const size = 22 + Math.random() * 18;
+                const delay = (Math.random() * 0.9).toFixed(2); // tight delay for dense burst
+                const duration = (2.6 + Math.random() * 0.9).toFixed(2); // around 2.6–3.5s
+                const size = 18 + Math.random() * 26;
+                const startOffset = -25 - Math.random() * 45; // start well below to fully pass through
                 return (
                   <span
                     key={index}
@@ -105,6 +106,7 @@
                       animationDelay: `${delay}s`,
                       animationDuration: `${duration}s`,
                       fontSize: `${size}px`,
+                      bottom: `${startOffset}%`,
                     }}
                   >
                     ❤
@@ -157,7 +159,7 @@
                 </>
               )}
 
-              {phase === "final" && (
+              {answer === "yes" && (
                 <div className="answer-box">
                   <h2>YAY! 💞</h2>
                   <p>
