@@ -1,0 +1,236 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  background: radial-gradient(circle at top, #ffdde1 0, #ee9ca7 40%, #2b1331 100%);
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #2b0b18;
+}
+
+.page {
+  position: relative;
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+}
+
+.card {
+  position: relative;
+  max-width: 480px;
+  width: 100%;
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 24px;
+  padding: 28px 24px 32px;
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.2);
+  text-align: center;
+  overflow: hidden;
+  animation: card-pop 0.6s ease-out;
+}
+
+.card::before {
+  content: "";
+  position: absolute;
+  inset: -40px;
+  background: radial-gradient(circle at top left, #ff9a9e 0, transparent 55%),
+    radial-gradient(circle at bottom right, #fad0c4 0, transparent 55%);
+  opacity: 0.55;
+  z-index: -1;
+}
+
+.title {
+  font-size: 2rem;
+  margin-bottom: 10px;
+}
+
+.subtitle {
+  font-size: 0.95rem;
+  margin-bottom: 18px;
+}
+
+.question {
+  font-weight: 600;
+  margin-bottom: 18px;
+}
+
+.buttons {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  margin-bottom: 16px;
+  min-height: 44px;
+}
+
+.btn {
+  border: none;
+  padding: 10px 24px;
+  border-radius: 999px;
+  font-size: 0.98rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+  white-space: nowrap;
+}
+
+.btn-yes {
+  background: linear-gradient(135deg, #ff758c, #ff7eb3);
+  color: #ffffff;
+  box-shadow: 0 8px 18px rgba(255, 120, 160, 0.6);
+}
+
+.btn-yes:hover {
+  transform: translateY(-1px) scale(1.02);
+  box-shadow: 0 10px 22px rgba(255, 120, 160, 0.7);
+}
+
+.btn-no {
+  background: #ffe3eb;
+  color: #c4496e;
+}
+
+.btn-no:hover {
+  background: #ffd1e1;
+}
+
+.hint {
+  font-size: 0.85rem;
+  color: #a33657;
+}
+
+.answer-box {
+  margin-top: 10px;
+  padding: 12px 14px;
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px dashed rgba(255, 120, 160, 0.7);
+}
+
+.answer-box h2 {
+  margin-bottom: 6px;
+}
+
+/* Floating hearts background */
+.floating-hearts {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  opacity: 0.4;
+}
+
+.floating-hearts span {
+  position: absolute;
+  font-size: 24px;
+  animation: float 6s linear infinite;
+}
+
+.floating-hearts span:nth-child(1) {
+  left: 15%;
+  bottom: -10%;
+  animation-duration: 7s;
+}
+
+.floating-hearts span:nth-child(2) {
+  left: 45%;
+  bottom: -15%;
+  animation-duration: 5.5s;
+}
+
+.floating-hearts span:nth-child(3) {
+  left: 70%;
+  bottom: -12%;
+  animation-duration: 6.5s;
+}
+
+.floating-hearts span:nth-child(4) {
+  left: 85%;
+  bottom: -18%;
+  animation-duration: 5.8s;
+}
+
+@keyframes float {
+  0% {
+    transform: translateY(0) scale(1);
+    opacity: 0;
+  }
+  10% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(-120vh) scale(1.3);
+    opacity: 0;
+  }
+}
+
+/* Full-screen heart shower when Yes is clicked */
+.heart-shower {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+  z-index: 5;
+}
+
+.heart-shower .heart {
+  position: absolute;
+  bottom: -10%;
+  color: #ff2d55;
+  text-shadow: 0 0 8px rgba(0, 0, 0, 0.4);
+  animation-name: heart-fall;
+  animation-timing-function: ease-in;
+  animation-iteration-count: 1;
+}
+
+@keyframes heart-fall {
+  0% {
+    transform: translateY(0) scale(0.6) rotate(0deg);
+    opacity: 0;
+  }
+  10% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(-120vh) scale(1.4) rotate(25deg);
+    opacity: 0;
+  }
+}
+
+@keyframes card-pop {
+  0% {
+    transform: translateY(10px) scale(0.95);
+    opacity: 0;
+  }
+  100% {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
+}
+
+@media (max-width: 480px) {
+  .card {
+    padding: 22px 18px 26px;
+  }
+
+  .title {
+    font-size: 1.7rem;
+  }
+
+  .buttons {
+    flex-direction: column;
+    gap: 10px;
+  }
+}

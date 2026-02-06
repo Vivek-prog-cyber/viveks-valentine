@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Be My Valentine?</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="./style.css" />
+    <!-- React via CDN -->
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <!-- Babel so we can use JSX directly in the browser -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  </head>
+  <body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+      function App() {
+        const [answered, setAnswered] = React.useState(false);
+        const [answer, setAnswer] = React.useState("");
+        const [phase, setPhase] = React.useState("question"); // question -> hearts -> final
+        const [noStyle, setNoStyle] = React.useState({ position: "relative" });
+        const [noDisabled, setNoDisabled] = React.useState(false);
+        const noRef = React.useRef(null);
+
+        const handleYes = () => {
+          setAnswered(true);
+          setAnswer("yes");
+          setPhase("hearts");
+        };
+
+        // When hearts are playing, after a while show only the final message
+        React.useEffect(() => {
+          if (phase !== "hearts") return;
+          const timer = setTimeout(() => {
+            setPhase("final");
+          }, 2600);
+          return () => clearTimeout(timer);
+        }, [phase]);
+
+        const handleButtonsMouseMove = (event) => {
+          const btn = noRef.current;
+          if (!btn || answered || phase !== "question") return;
+
+          const rect = btn.getBoundingClientRect();
+          const mouseX = event.clientX;
+          const mouseY = event.clientY;
+
+          const centerX = rect.left + rect.width / 2;
+          const centerY = rect.top + rect.height / 2;
+
+          const dx = mouseX - centerX;
+          const dy = mouseY - centerY;
+          const distance = Math.sqrt(dx * dx + dy * dy);
+
+          const safeRadius = 90; // how close the mouse can get
+          if (distance < safeRadius) {
+            // move the button away from the mouse
+            const angle = Math.atan2(dy, dx);
+            const moveDistance = safeRadius - distance + 40;
+            const offsetX = -Math.cos(angle) * moveDistance;
+            const offsetY = -Math.sin(angle) * moveDistance;
+
+            setNoStyle({
+              position: "relative",
+              transform: `translate(${offsetX}px, ${offsetY}px)` ,
+              transition: "transform 0.1s ease-out",
+            });
+
+            // make it effectively unclickable when very close
+            setNoDisabled(distance < 40);
+            if (!answered && answer !== "no") {
+              setAnswer("no");
+            }
+          }
+        };
+
+        const handleNoClick = (event) => {
+          // extra safety: if it's in "disabled" zone, ignore clicks
+          if (noDisabled) {
+            event.preventDefault();
+            event.stopPropagation();
+            return;
+          }
+          if (!answered) {
+            setAnswer("no");
+          }
+        };
+
+        // Generate many hearts for the shower when in "hearts" phase
+        const heartShower =
+          phase === "hearts" ? (
+            <div className="heart-shower" aria-hidden="true">
+              {Array.from({ length: 90 }).map((_, index) => {
+                const left = Math.random() * 100;
+                const delay = (Math.random() * 0.8).toFixed(2);
+                const duration = (2.1 + Math.random() * 0.9).toFixed(2);
+                const size = 22 + Math.random() * 18;
+                return (
+                  <span
+                    key={index}
+                    className="heart"
+                    style={{
+                      left: `${left}%`,
+                      animationDelay: `${delay}s`,
+                      animationDuration: `${duration}s`,
+                      fontSize: `${size}px`,
+                    }}
+                  >
+                    ❤
+                  </span>
+                );
+              })}
+            </div>
+          ) : null;
+
+        return (
+          <div className="page">
+            <div className="floating-hearts" aria-hidden="true">
+              <span>❤</span>
+              <span>❤</span>
+              <span>❤</span>
+              <span>❤</span>
+            </div>
+
+            {heartShower}
+
+            <main className="card">
+              {phase === "question" && (
+                <>
+                  <h1 className="title">Will you be my Valentine?</h1>
+                  <p className="subtitle">
+                    I know this might be a little cheesy, but spending this day with
+                    you would make it perfect.
+                  </p>
+                  <p className="question">So... what do you say?</p>
+
+                  <div className="buttons" onMouseMove={handleButtonsMouseMove}>
+                    <button className="btn btn-yes" onClick={handleYes}>
+                      Yes 💘
+                    </button>
+                    <button
+                      className="btn btn-no"
+                      ref={noRef}
+                      onClick={handleNoClick}
+                      style={noStyle}
+                    >
+                      No 🙈
+                    </button>
+                  </div>
+
+                  {answer === "no" && (
+                    <p className="hint">
+                      Ouch! That hurt a little. But I'm not giving up that easily 😜
+                    </p>
+                  )}
+                </>
+              )}
+
+              {phase === "final" && (
+                <div className="answer-box">
+                  <h2>YAY! 💞</h2>
+                  <p>
+                    You just made my day. I feel incredibly lucky to have you, and I
+                    can't wait to make beautiful memories together — starting with a
+                    very special date.
+                  </p>
+                </div>
+              )}
+            </main>
+          </div>
+        );
+      }
+
+      const root = ReactDOM.createRoot(document.getElementById("root"));
+      root.render(<App />);
+    </script>
+  </body>
+</html>
