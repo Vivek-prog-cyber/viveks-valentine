@@ -35,6 +35,7 @@ body {
   text-align: center;
   overflow: hidden;
   animation: card-pop 0.6s ease-out;
+  z-index: 2; /* above heart shower */
 }
 
 .card::before {
@@ -179,7 +180,7 @@ body {
   inset: 0;
   pointer-events: none;
   overflow: hidden;
-  z-index: 5;
+  z-index: 1; /* behind card/message */
 }
 
 .heart-shower .heart {
@@ -200,7 +201,7 @@ body {
   10% {
     opacity: 1;
   }
-  50% {
+  60% {
     opacity: 1;
   }
   100% {
